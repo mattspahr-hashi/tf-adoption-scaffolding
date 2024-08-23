@@ -36,6 +36,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "s3_bucket_encrypt
   }
 }
 
+# S3 Bucket Policy
 resource "aws_s3_bucket_policy" "bucket_policy" {
   bucket = aws_s3_bucket.s3_bucket_state.id
 
@@ -71,6 +72,7 @@ resource "aws_s3_bucket_versioning" "versioning_example" {
   }
 }
 
+# Table to lock state
 resource "aws_dynamodb_table" "state_locking_table" {
   name           = "s3_state_locking"
   billing_mode   = "PROVISIONED"
@@ -82,13 +84,18 @@ resource "aws_dynamodb_table" "state_locking_table" {
     name = "LockID"
     type = "S"
   }
+
+  stream_enabled   = true
+  stream_view_type = "NEW_IMAGE"
 }
 
+# IAM User for deployment
 resource "aws_iam_user" "iam_user" {
   name = "backend-deployment"
   path = "/"
 }
 
+# IAM User Policy for deployment
 resource "aws_iam_user_policy" "attach_s3_list_policy" {
   name = "backend-user-policy"
   user = aws_iam_user.iam_user.name
