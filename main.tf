@@ -19,7 +19,7 @@ resource "aws_instance" "web_server" {
 }
 
 resource "aws_security_group" "web-server-sg" {
-  name        = "web-server-sg"
+  name        = "web-server-sg1"
   description = "Allow HTTP from Anywhere"
 
   ingress {
