@@ -28,23 +28,10 @@ jobs:
         run: terraform init
 
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan -out .planfile
         
-      - name: Upload Terraform Plan
-        uses: actions/upload-artifact@v3
+      - name: Post PR comment
+        uses: borchero/terraform-plan-comment@v2
         with:
-          name: terraform-plan
-          path: plan.txt
-
-      - name: Post Plan as Comment
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const plan = fs.readFileSync('plan.txt', 'utf8');
-            const comment = `### Terraform Plan\n\`\`\`\n${plan}\n\`\`\``;
-
-            const { data: commentData } = await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              body: comment
-            });
+          token: ${{ github.token }}
+          planfile: .planfile
