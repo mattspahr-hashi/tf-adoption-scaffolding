@@ -89,6 +89,11 @@ resource "aws_dynamodb_table" "state_locking_table" {
   stream_view_type = "NEW_IMAGE"
 }
 
+import {
+  to = aws_iam_user.iam_user
+  id = "backend-deployment"
+}
+
 # IAM User for deployment
 resource "aws_iam_user" "iam_user" {
   name = "backend-deployment"
