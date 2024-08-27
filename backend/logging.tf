@@ -1,3 +1,4 @@
+# DynamoDB Table for Logging
 resource "aws_dynamodb_table" "logging_table" {
   name           = "terraform_audit_table"
   billing_mode   = "PROVISIONED"
@@ -17,6 +18,7 @@ resource "aws_dynamodb_table" "logging_table" {
   }
 }
 
+# Lambda Execution Role 
 resource "aws_iam_role" "lambda_execution_role" {
   name = "lambda_execution_role"
 
@@ -34,12 +36,14 @@ resource "aws_iam_role" "lambda_execution_role" {
   })
 }
 
+# Lambda Execution Role Attachment
 resource "aws_iam_policy_attachment" "lambda_policy_attachment" {
   name       = "lambda_policy_attachment"
   roles      = [aws_iam_role.lambda_execution_role.name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+# Write to Dynamo Policy
 resource "aws_iam_policy" "lambda_dynamodb_policy" {
   name        = "lambda_dynamodb_policy"
   description = "Policy to allow Lambda function to write to DynamoDB"
@@ -59,12 +63,14 @@ resource "aws_iam_policy" "lambda_dynamodb_policy" {
   })
 }
 
+# Write to Dynamo Policy Attachment
 resource "aws_iam_policy_attachment" "lambda_dynamo_attachment" {
   name       = "lambda_dynamo_attachment"
   roles      = [aws_iam_role.lambda_execution_role.name]
   policy_arn = aws_iam_policy.lambda_dynamodb_policy.arn
 }
 
+# Read Dynamo Events Policy
 resource "aws_iam_policy" "lambda_dynamodb_state_policy" {
   name        = "lambda_dynamodb_state_policy"
   description = "Policy to allow Lambda function to write to DynamoDB"
@@ -85,12 +91,14 @@ resource "aws_iam_policy" "lambda_dynamodb_state_policy" {
   })
 }
 
+# Read Dynamo Events Policy Attachment
 resource "aws_iam_policy_attachment" "lambda_dynamodb_state_policy_attachment" {
   name       = "lambda_dynamodb_state_policy"
   roles      = [aws_iam_role.lambda_execution_role.name]
   policy_arn = aws_iam_policy.lambda_dynamodb_state_policy.arn
 }
 
+# Event Stream Dynamo -> Lambda
 resource "aws_lambda_event_source_mapping" "log_event_source_mapping" {
   event_source_arn  = aws_dynamodb_table.state_locking_table.stream_arn
   function_name     = aws_lambda_function.logging-func.function_name
@@ -98,10 +106,12 @@ resource "aws_lambda_event_source_mapping" "log_event_source_mapping" {
   batch_size        = 1
 }
 
+# S3 Bucket Code
 resource "aws_s3_bucket" "lambda-code" {
   bucket = "audit-lambda-code-bucket-${random_string.bucket_postfix.result}"
 }
 
+# Lambda Logging Function
 resource "aws_lambda_function" "logging-func" {
   s3_bucket     = aws_s3_bucket.lambda-code.id
   s3_key        = "logging-lambda.zip"
@@ -109,8 +119,4 @@ resource "aws_lambda_function" "logging-func" {
   role          = aws_iam_role.lambda_execution_role.arn
   handler       = "index.lambda_handler"
   runtime       = "python3.8"
-}
-
-output "lambda_function_arn" {
-  value = aws_lambda_function.logging-func.arn
 }

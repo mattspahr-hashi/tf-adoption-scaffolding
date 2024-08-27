@@ -7,6 +7,8 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -28,4 +30,6 @@ jobs:
         run: terraform init
 
       - name: Terraform Plan
-        run: terraform plan
+        uses: dflook/terraform-plan@v1
+        with:
+          path: .
