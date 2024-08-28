@@ -26,7 +26,7 @@ jobs:
           aws-region: us-east-2
 
       - name: Write backend config
-        run: echo "${{ secrets.DEV_S3_BACKEND }}" > env/backend_s3_dev.hcl
+        run: echo "${{ secrets.S3_BACKEND_DEV }}" > env/backend_s3_dev.hcl
 
       - name: Terraform Init
         run: terraform init -backend-config="env/backend_s3_dev.hcl"
