@@ -29,6 +29,9 @@ jobs:
       - name: Write backend config
         run: echo "${{ secrets.S3_BACKEND_DEV }}" > env/backend_s3_dev.hcl
 
+      - name: Check Backend
+        run: cat env/backend_s3_dev.hcl  
+
       - name: Terraform Plan
         uses: dflook/terraform-plan@v1
         with:
