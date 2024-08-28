@@ -27,7 +27,7 @@ jobs:
           aws-region: us-east-2
       
       - name: Write backend config
-        run: echo "${{ secrets.S3_BACKEND_DEV }}" > backend_s3_dev.conf
+        run: echo ${{ secrets.S3_BACKEND_DEV }} > backend_s3_dev.conf
 
       - name: Check Backend
         run: cat backend_s3_dev.conf  
