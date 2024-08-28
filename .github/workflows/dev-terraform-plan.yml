@@ -1,13 +1,14 @@
-name: Terraform Apply
+name: Dev Terraform Plan
 
 on:
-  push:
-    branches:
-    - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -25,8 +26,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+      - name: Terraform Plan
+        uses: dflook/terraform-plan@v1
+        with:
+          backend_config: "env/backend_s3_dev.hcl"
+          path: .
