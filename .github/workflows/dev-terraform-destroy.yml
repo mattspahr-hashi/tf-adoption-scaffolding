@@ -1,6 +1,6 @@
 name: Dev Terraform Apply
 
-on: workflow_disptach
+on: workflow_dispatch
 
 jobs:
   terraform:
