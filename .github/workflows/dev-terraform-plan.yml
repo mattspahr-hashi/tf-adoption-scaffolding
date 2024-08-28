@@ -27,13 +27,13 @@ jobs:
           aws-region: us-east-2
       
       - name: Write backend config
-        run: echo "${{ secrets.S3_BACKEND_DEV }}" > ${{ github.repository }}/backend_s3_dev.hcl
+        run: echo "${{ secrets.S3_BACKEND_DEV }}" > backend_s3_dev.conf
 
       - name: Check Backend
-        run: cat ${{ github.repository }}/backend_s3_dev.hcl
+        run: cat backend_s3_dev.conf  
 
       - name: Terraform Plan
         uses: dflook/terraform-plan@v1
         with:
-          backend_config: "${{ github.repository }}/backend_s3_dev.hcl"
+          backend_config: "backend_s3_dev.conf"
           path: .
