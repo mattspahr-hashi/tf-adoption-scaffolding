@@ -29,5 +29,5 @@ jobs:
       - name: Terraform Plan
         uses: dflook/terraform-plan@v1
         with:
-          backend-config: "env/backend_s3_dev.hcl"
+          backend_config: "env/backend_s3_dev.hcl"
           path: .
