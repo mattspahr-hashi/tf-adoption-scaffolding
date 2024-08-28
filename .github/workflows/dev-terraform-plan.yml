@@ -1,4 +1,4 @@
-name: Terraform Plan
+name: Dev Terraform Plan
 
 on:
   pull_request:
@@ -27,7 +27,7 @@ jobs:
           aws-region: us-east-2
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -backend-config="env/backend_s3_dev.hcl"
 
       - name: Terraform Plan
         uses: dflook/terraform-plan@v1

@@ -6,13 +6,9 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket         = "state-web-server-utxzao4f70w63039"
-    encrypt        = true
-    region         = "us-east-2"
-    key            = "terraform.tfstate"
-    dynamodb_table = "s3_state_locking"
-  }
+
+
+  backend "s3" {}
 
   required_version = ">= 1.2.0"
 }

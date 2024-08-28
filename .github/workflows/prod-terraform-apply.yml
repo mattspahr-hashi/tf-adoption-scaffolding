@@ -1,9 +1,6 @@
-name: Terraform Apply
+name: Prod Terraform Apply
 
-on:
-  push:
-    branches:
-    - main
+on: workflow_dispatch
 
 jobs:
   terraform:
@@ -21,12 +18,12 @@ jobs:
       - name: Set up AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} # Use Prod Creds
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # Use Prod Creds
           aws-region: us-east-2
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -backend-config="env/backend_s3_prod.hcl"
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
