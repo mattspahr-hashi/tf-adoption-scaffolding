@@ -24,8 +24,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
+      - name: Write backend config
+        run: echo "${{ secrets.S3_BACKEND_PROD }}" > env/backend_s3_prod.hcl
+
       - name: Terraform Init
-        run: terraform init -backend-config="env/backend_s3_dev.hcl"
+        run: terraform init -backend-config="env/backend_s3_prod.hcl"
 
       - name: Terraform Plan
         run: terraform plan
