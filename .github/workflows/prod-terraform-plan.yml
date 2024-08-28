@@ -1,8 +1,6 @@
 name: Prod Terraform Plan
 
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+on: workflow_dispatch
 
 jobs:
   terraform:
